@@ -4,7 +4,7 @@ const { err } = useToast()
 const tab = ref<'entrar' | 'cadastrar'>('cadastrar')
 const loading = ref(false)
 const msg = ref('')
-const f = reactive({ name: '', email: '', password: '', farm: '', paddock: '', kind: 'piquete', demo: true })
+const f = reactive({ name: '', email: '', password: '', farm: '', paddock: '', kind: 'piquete', demo: false })
 
 async function entrar() {
   loading.value = true
@@ -57,15 +57,15 @@ function traduz(m: string) {
         <div class="row"><LogoLeaf :size="54" /><h1>Pasto <span class="g">Vivo</span></h1></div>
         <p class="lead">Saiba o momento certo de colocar o gado em cada piquete. Sensores medem quanta luz o pasto segura e o app avisa quando ele chega no <b>auge de nutrientes</b>.</p>
         <ul class="feats">
-          <li>🗺️ Desenhe seus piquetes no mapa e posicione os sensores</li>
-          <li>🌾 Faixa ideal por tipo de capim</li>
-          <li>🔔 Alertas de ponto de entrada, sensor sem sinal e mais</li>
+          <li><Icon name="map" /> Desenhe seus piquetes no mapa e posicione os sensores</li>
+          <li><Icon name="sprout" /> Faixa ideal por tipo de capim</li>
+          <li><Icon name="bell" /> Alertas de ponto de entrada, sensor sem sinal e mais</li>
         </ul>
       </div>
 
       <div class="card auth">
         <div v-if="!configured" class="banner warn">
-          <div>⚙️</div>
+          <Icon name="settings" :size="20" />
           <div><b>Falta configurar o Supabase.</b><br><span class="small">Cadastre SUPABASE_URL e SUPABASE_ANON_KEY nas variáveis do GitHub e publique de novo.</span></div>
         </div>
         <template v-else>
@@ -74,7 +74,7 @@ function traduz(m: string) {
             <button class="chip tab" :class="{ on: tab === 'entrar' }" @click="tab = 'entrar'; msg = ''">Entrar</button>
           </div>
 
-          <div v-if="msg" class="banner ok mb"><div>📬</div><div>{{ msg }}</div></div>
+          <div v-if="msg" class="banner ok mb"><Icon name="mail" :size="20" /><div>{{ msg }}</div></div>
 
           <form v-if="tab === 'cadastrar'" @submit.prevent="cadastrar">
             <div class="field"><label>Seu nome (fazendeiro)</label><input v-model="f.name" class="input" required placeholder="Ex.: João da Silva"></div>
@@ -90,8 +90,7 @@ function traduz(m: string) {
               <div class="field"><label>E-mail</label><input v-model="f.email" type="email" class="input" required autocomplete="email"></div>
               <div class="field"><label>Senha</label><input v-model="f.password" type="password" class="input" required minlength="6" autocomplete="new-password"></div>
             </div>
-            <label class="check"><input v-model="f.demo" type="checkbox"> Carregar também a fazenda de demonstração (3 sensores simulados)</label>
-            <button class="btn primary full mt" :disabled="loading">{{ loading ? 'Criando…' : 'Criar conta 🌱' }}</button>
+            <button class="btn primary full mt" :disabled="loading">{{ loading ? 'Criando…' : 'Criar conta' }}</button>
           </form>
 
           <form v-else @submit.prevent="entrar">
@@ -114,7 +113,7 @@ function traduz(m: string) {
 .g { color: var(--leaf-2); }
 .lead { font-size: 1.12rem; color: var(--ink-2); max-width: 520px; }
 .feats { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 8px; font-weight: 700; color: var(--ink-2); }
-.feats li { background: rgba(255, 253, 245, .7); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; width: fit-content; animation: fadeUp .5s both; }
+.feats li { display: flex; align-items: center; gap: 10px; color: var(--leaf-dark); background: rgba(255, 253, 245, .7); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; width: fit-content; animation: fadeUp .5s both; }
 .feats li:nth-child(2) { animation-delay: .1s; } .feats li:nth-child(3) { animation-delay: .2s; }
 .auth { max-width: 480px; width: 100%; justify-self: end; }
 .full { width: 100%; justify-content: center; padding: 12px; }

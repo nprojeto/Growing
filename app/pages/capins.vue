@@ -27,7 +27,7 @@ async function save() {
       : sb().from('grass_types').insert({ ...row, owner_id: u.user!.id })
     const { error } = await q
     if (error) throw error
-    await store.loadGrass(); open.value = false; ok('Capim salvo 🌾')
+    await store.loadGrass(); open.value = false; ok('Capim salvo')
   } catch (e) { err(e) }
 }
 async function remove(g: any) {
@@ -42,7 +42,7 @@ async function remove(g: any) {
   <div class="wrap">
     <div class="row between mb">
       <h1>Tipos de capim</h1>
-      <button class="btn primary" @click="novo">+ Cadastrar capim</button>
+      <button class="btn primary" @click="novo"><Icon name="plus" :size="16" /> Cadastrar capim</button>
     </div>
 
     <form v-if="open" class="card mb" @submit.prevent="save">
@@ -90,8 +90,8 @@ async function remove(g: any) {
         </div>
         <div class="tiny muted"><i>{{ g.scientific_name }}</i></div>
         <div class="row between small mt">
-          <span>↕ {{ g.entry_height_cm ?? '—' }} → {{ g.exit_height_cm ?? '—' }} cm</span>
-          <span>🎯 {{ g.target_min }}–{{ g.target_max }}%</span>
+          <span class="row" style="gap:4px"><Icon name="ruler" :size="14" /> {{ g.entry_height_cm ?? '—' }} → {{ g.exit_height_cm ?? '—' }} cm</span>
+          <span class="row" style="gap:4px"><Icon name="target" :size="14" /> {{ g.target_min }}–{{ g.target_max }}%</span>
         </div>
         <div class="row mt">
           <template v-if="g.owner_id">

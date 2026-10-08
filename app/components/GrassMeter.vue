@@ -109,7 +109,12 @@ const maxModel = computed({ get: () => props.max, set: (v) => emit('update:max',
       <text x="16" :y="GROUND + 24" class="soil">interceptação de luz</text>
 
       <!-- vaca quando no ponto -->
-      <text v-if="status.key === 'ideal'" x="232" :y="GROUND - 4" font-size="30" class="cow">🐄</text>
+      <g v-if="status.key === 'ideal'" :transform="`translate(214 ${GROUND - 40})`"><g class="cow">
+        <rect x="0" y="0" width="44" height="30" rx="15" fill="#fff" opacity=".95" />
+        <circle cx="15" cy="15" r="9" fill="#2f9e44" />
+        <path d="m11 15 3 3 5-6" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="27" y="19.5" class="ok">OK</text>
+      </g></g>
     </svg>
 
     <div v-if="!compact" class="info">
@@ -149,7 +154,8 @@ const maxModel = computed({ get: () => props.max, set: (v) => emit('update:max',
 .sun { animation: float 5s ease-in-out infinite; }
 .rays { transform-origin: 276px 40px; animation: spin 24s linear infinite; }
 .cloud { animation: float 7s ease-in-out infinite; }
-.cow { animation: bounce 1.4s ease-in-out infinite; }
+.cow { animation: bounce 1.6s ease-in-out infinite; }
+.ok { font: 800 11px Nunito, sans-serif; fill: #2f9e44; }
 .lbl { font: 700 11px Nunito, sans-serif; }
 .val { font: 800 13px Nunito, sans-serif; fill: #fff; }
 .soil { font: 700 11px Nunito, sans-serif; fill: #f3e3d2; letter-spacing: .05em; text-transform: uppercase; }

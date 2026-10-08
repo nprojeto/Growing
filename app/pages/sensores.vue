@@ -72,7 +72,7 @@ const example = `{
     <h1>Sensores</h1>
 
     <div v-if="unassigned" class="banner info mb">
-      <div>🆕</div><div><b>{{ unassigned }} sensor(es) sem piquete.</b> Escolha o piquete na tabela e depois posicione no mapa.</div>
+      <Icon name="newitem" :size="20" /><div><b>{{ unassigned }} sensor(es) sem piquete.</b> Escolha o piquete na tabela e depois posicione no mapa.</div>
     </div>
 
     <div class="card mb">
@@ -93,7 +93,7 @@ const example = `{
               <td><input :value="s.name" class="input" style="min-width:130px" @change="update(s, { name: ($event.target as HTMLInputElement).value })"></td>
               <td>
                 <select :value="s.role" @change="update(s, { role: ($event.target as HTMLSelectElement).value })">
-                  <option value="canopy">No pasto</option><option value="reference">☀ Referência</option>
+                  <option value="canopy">No pasto</option><option value="reference">Referência</option>
                 </select>
               </td>
               <td>
@@ -107,8 +107,8 @@ const example = `{
               <td class="tiny">{{ fmtAgo(s.last_seen_at) }}</td>
               <td><input type="checkbox" :checked="s.active" @change="update(s, { active: ($event.target as HTMLInputElement).checked })"></td>
               <td class="row">
-                <NuxtLink v-if="s.paddock_id" :to="`/piquete/${s.paddock_id}`" class="btn sm ghost">📍</NuxtLink>
-                <button class="btn sm ghost danger" @click="remove(s)">✕</button>
+                <NuxtLink v-if="s.paddock_id" :to="`/piquete/${s.paddock_id}`" class="btn sm ghost" title="Ver no mapa"><Icon name="pin" :size="15" /></NuxtLink>
+                <button class="btn sm ghost danger" title="Excluir" @click="remove(s)"><Icon name="trash" :size="15" /></button>
               </td>
             </tr>
             <tr v-if="!list.length"><td colspan="9" class="muted">Nenhum sensor. Eles aparecem aqui sozinhos quando a central envia a primeira leitura, ou quando você posiciona um no mapa do piquete.</td></tr>
@@ -119,7 +119,7 @@ const example = `{
 
     <div class="grid g2">
       <div class="card">
-        <h3>📥 Importar log</h3>
+        <h3 class="row" style="gap:8px"><Icon name="upload" /> Importar log</h3>
         <p class="small muted">Cole o texto do log da central (formato <code>[16/07/2026 15:30] ID:0 | Lux:60 | RSSI:0 dBm</code>) ou escolha o arquivo .txt. Sensores novos são criados automaticamente (ID 0 = referência).</p>
         <input type="file" accept=".txt,.log,text/plain" class="mb" @change="pickFile">
         <textarea v-model="logText" placeholder="[16/07/2026 15:30] ID:0 | Lux:60 | RSSI:0 dBm" />
@@ -127,19 +127,19 @@ const example = `{
       </div>
 
       <div class="card">
-        <h3>📡 Centrais (envio automático)</h3>
+        <h3 class="row" style="gap:8px"><Icon name="router" /> Centrais (envio automático)</h3>
         <p class="small muted">Cada central usa um código secreto para enviar as leituras direto para o sistema.</p>
         <div v-for="g in gateways" :key="g.id" class="gw">
           <div class="row between"><b>{{ g.name }}</b><span class="tiny muted">visto {{ fmtAgo(g.last_seen_at) }}</span></div>
           <div class="row mt">
             <code class="code grow">{{ g.token }}</code>
-            <button class="btn sm" @click="copy(g.token)">Copiar</button>
-            <button class="btn sm ghost danger" @click="removeGateway(g)">✕</button>
+            <button class="btn sm" @click="copy(g.token)"><Icon name="copy" :size="14" /> Copiar</button>
+            <button class="btn sm ghost danger" title="Excluir" @click="removeGateway(g)"><Icon name="trash" :size="15" /></button>
           </div>
         </div>
         <div class="row mt">
           <input v-model="gwName" class="input grow" placeholder="Nome da central">
-          <button class="btn" @click="addGateway">+ Nova central</button>
+          <button class="btn" @click="addGateway"><Icon name="plus" :size="16" /> Nova central</button>
         </div>
         <details class="mt">
           <summary class="small"><b>Instruções para quem programa a central</b></summary>

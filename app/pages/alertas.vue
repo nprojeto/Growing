@@ -45,14 +45,14 @@ async function evaluate() {
     <div class="row between mb">
       <h1>Alertas</h1>
       <div class="row">
-        <button class="btn sm" @click="readAll">Marcar todos como lidos</button>
-        <button class="btn sm primary" :disabled="running" @click="evaluate">🔄 Reavaliar agora</button>
+        <button class="btn sm" @click="readAll"><Icon name="check" :size="15" /> Marcar todos como lidos</button>
+        <button class="btn sm primary" :disabled="running" @click="evaluate"><Icon name="refresh" :size="15" /> Reavaliar agora</button>
       </div>
     </div>
 
     <div class="row mb">
-      <button v-for="s in [['todas','Todos'],['success','🐄 Ponto ideal'],['danger','🚨 Passou'],['warning','⚠️ Atenção'],['info','💡 Info']]" :key="s[0]"
-        class="chip" :class="{ on: sev === s[0] }" @click="sev = s[0]!">{{ s[1] }}</button>
+      <button v-for="s in [['todas','Todos',''],['success','Ponto ideal','check'],['danger','Passou','danger'],['warning','Atenção','warning'],['info','Informativo','info']]" :key="s[0]"
+        class="chip" :class="{ on: sev === s[0] }" @click="sev = s[0]!"><Icon v-if="s[2]" :name="s[2]!" :size="14" />{{ s[1] }}</button>
       <label class="row small" style="margin:0 0 0 auto"><input v-model="showResolved" type="checkbox"> Mostrar resolvidos</label>
     </div>
 
@@ -61,19 +61,19 @@ async function evaluate() {
         <div v-if="padName(a.paddock_id)" class="tiny muted">{{ padName(a.paddock_id) }}</div>
         <AlertItem :alert="a" @read="markRead" @resolve="resolve" />
       </div>
-      <div v-if="!list.length" class="card center muted">Nenhum alerta aqui 🌤️</div>
+      <div v-if="!list.length" class="card center muted">Nenhum alerta aqui.</div>
     </div>
 
     <div class="card mt small">
       <h3>Quando o sistema avisa</h3>
       <ul class="muted">
-        <li><b>🐄 Ponto de entrada:</b> média dos sensores dentro da faixa ideal do piquete.</li>
-        <li><b>⏳ Quase no ponto:</b> até 5 pontos abaixo da faixa.</li>
-        <li><b>🚨 Passou do ponto:</b> acima do limite máximo; perda de qualidade.</li>
-        <li><b>⚠️ Sem comunicação:</b> sensor sem enviar há mais horas que o configurado na fazenda.</li>
-        <li><b>💡 Sinal fraco:</b> RSSI igual ou abaixo de −110 dBm.</li>
-        <li><b>⚠️ Leitura inconsistente:</b> sensor do pasto mediu mais luz que a referência.</li>
-        <li><b>💡 Novo sensor:</b> chegou leitura de um ID ainda sem piquete.</li>
+        <li><b>Ponto de entrada:</b> média dos sensores dentro da faixa ideal do piquete.</li>
+        <li><b>Quase no ponto:</b> até 5 pontos abaixo da faixa.</li>
+        <li><b>Passou do ponto:</b> acima do limite máximo; perda de qualidade.</li>
+        <li><b>Sem comunicação:</b> sensor sem enviar há mais horas que o configurado na fazenda.</li>
+        <li><b>Sinal fraco:</b> RSSI igual ou abaixo de −110 dBm.</li>
+        <li><b>Leitura inconsistente:</b> sensor do pasto mediu mais luz que a referência.</li>
+        <li><b>Novo sensor:</b> chegou leitura de um ID ainda sem piquete.</li>
       </ul>
       <p class="tiny muted">Só contam leituras válidas: dentro do horário configurado (padrão 10h–14h) e com luz suficiente na referência.</p>
     </div>

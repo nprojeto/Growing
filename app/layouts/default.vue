@@ -5,11 +5,11 @@ const { toasts, err } = useToast()
 const route = useRoute()
 
 const nav = [
-  { to: '/painel', label: 'Painel', icon: '🌿' },
-  { to: '/fazendas', label: 'Fazendas', icon: '🏡' },
-  { to: '/sensores', label: 'Sensores', icon: '📡' },
-  { to: '/capins', label: 'Capins', icon: '🌾' },
-  { to: '/alertas', label: 'Alertas', icon: '🔔' },
+  { to: '/painel', label: 'Painel', icon: 'dashboard' },
+  { to: '/fazendas', label: 'Fazendas', icon: 'farm' },
+  { to: '/sensores', label: 'Sensores', icon: 'sensor' },
+  { to: '/capins', label: 'Capins', icon: 'sprout' },
+  { to: '/alertas', label: 'Alertas', icon: 'bell' },
 ]
 const unread = computed(() => alerts.value.filter((a) => !a.read_at).length)
 const showHeader = computed(() => !!session.value && route.path !== '/')
@@ -36,23 +36,20 @@ async function logout() { await sb().auth.signOut() }
         </NuxtLink>
 
         <select v-if="farms.length" class="farm-sel" :value="farmId || ''" @change="changeFarm" title="Fazenda ativa">
-          <option v-for="f in farms" :key="f.id" :value="f.id">🏡 {{ f.name }}{{ f.is_demo ? ' (demo)' : '' }}</option>
+          <option v-for="f in farms" :key="f.id" :value="f.id">{{ f.name }}</option>
         </select>
 
         <nav class="nav">
           <NuxtLink v-for="n in nav" :key="n.to" :to="n.to" class="nav-a" :class="{ on: route.path.startsWith(n.to) }">
-            <span class="ic">{{ n.icon }}</span>{{ n.label }}
+            <Icon :name="n.icon" :size="17" />{{ n.label }}
             <span v-if="n.to === '/alertas' && unread" class="badge">{{ unread }}</span>
           </NuxtLink>
         </nav>
-        <button class="btn ghost sm" @click="logout">Sair</button>
+        <button class="btn ghost sm" title="Sair" @click="logout"><Icon name="logout" :size="16" /> Sair</button>
       </div>
       <div v-if="busy" class="loadbar" />
     </header>
 
-    <div v-if="showHeader && farm?.is_demo" class="demo-strip">
-      🧪 Fazenda de demonstração: log real de jul/2026 + 30 dias simulados até hoje.
-    </div>
 
     <main>
       <slot />
@@ -74,7 +71,7 @@ async function logout() { await sb().auth.signOut() }
 .nav-a { position: relative; text-decoration: none; color: var(--ink-2); font-weight: 700; padding: 7px 12px; border-radius: 999px; white-space: nowrap; display: flex; gap: 6px; align-items: center; transition: .15s; }
 .nav-a:hover { background: var(--surface-2); }
 .nav-a.on { background: var(--leaf-soft); color: var(--leaf-dark); }
-.ic { font-size: 1rem; }
+
 .badge { background: var(--danger); color: #fff; border-radius: 999px; font-size: .7rem; padding: 1px 6px; }
 .loadbar { height: 3px; background: linear-gradient(90deg, var(--leaf-2), var(--sun), var(--leaf-2)); background-size: 200% 100%; animation: shimmer 1s linear infinite; }
 .demo-strip { background: var(--sun-soft); color: #6b4b00; text-align: center; font-weight: 700; font-size: .85rem; padding: 6px 12px; }

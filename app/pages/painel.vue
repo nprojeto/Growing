@@ -6,7 +6,6 @@ const { ok, err, info } = useToast()
 const paddockSel = useState<string | null>('paddockSel', () => null)
 const selected = ref<string[]>([])           // sensores filtrados
 const period = ref<number>(30)               // dias (0 = tudo)
-const seeding = ref(false)
 
 // aplica cadastro pendente (primeiro acesso)
 onMounted(async () => {
@@ -14,7 +13,6 @@ onMounted(async () => {
     await store.waitLoaded()
     const res = await store.applyPending()
     if (res?.paddockId && !res.demo) { info('Fazenda criada! Agora desenhe o piquete no mapa.'); return navigateTo(`/piquete/${res.paddockId}`) }
-    if (res?.demo) ok('Fazenda de demonstração carregada 🌿')
   } catch (e) { err(e) }
 })
 
@@ -83,10 +81,6 @@ function toggle(id: string) {
 }
 function selectAll() { selected.value = canopy.value.map((s) => s.id) }
 
-async function demo() {
-  seeding.value = true
-  try { await store.seedDemo(true); ok('Fazenda de demonstração carregada 🌿') } catch (e) { err(e) } finally { seeding.value = false }
-}
 async function reavaliar() {
   try { await store.evaluateAlerts(); ok('Alertas atualizados') } catch (e) { err(e) }
 }
@@ -98,10 +92,9 @@ async function reavaliar() {
     <div v-if="loaded && !farms.length" class="card empty-state">
       <GrassMeter :value="null" :min="90" :max="95" compact />
       <h2 class="mt">Vamos começar!</h2>
-      <p class="muted">Cadastre sua fazenda ou veja o app funcionando com dados de demonstração.</p>
+      <p class="muted">Cadastre sua fazenda, desenhe os piquetes e posicione os sensores.</p>
       <div class="row" style="justify-content:center">
-        <NuxtLink to="/fazendas" class="btn primary">🏡 Cadastrar fazenda</NuxtLink>
-        <button class="btn sun" :disabled="seeding" @click="demo">{{ seeding ? 'Carregando…' : '🧪 Carregar demonstração' }}</button>
+        <NuxtLink to="/fazendas" class="btn primary"><Icon name="farm" :size="16" /> Cadastrar fazenda</NuxtLink>
       </div>
     </div>
 
@@ -116,8 +109,7 @@ async function reavaliar() {
           <div class="muted">{{ farm?.name }} · {{ farm?.farmer_name }}</div>
         </div>
         <div class="row">
-          <button v-if="!farms.some(f => f.is_demo)" class="btn sm sun" :disabled="seeding" @click="demo">🧪 Demonstração</button>
-          <button class="btn sm" @click="reavaliar">🔄 Reavaliar alertas</button>
+          <button class="btn sm" @click="reavaliar"><Icon name="refresh" :size="15" /> Reavaliar alertas</button>
         </div>
       </div>
 
@@ -137,7 +129,7 @@ async function reavaliar() {
         </div>
 
         <div v-if="paddock && (!paddock.boundary || paddock.boundary.length < 3)" class="banner warn mb">
-          <div>✏️</div>
+          <Icon name="pencil" :size="20" />
           <div class="grow"><b>Desenhe o contorno de {{ paddock.name }}</b> e posicione os sensores.</div>
           <NuxtLink :to="`/piquete/${paddock.id}`" class="btn sm primary">Abrir no mapa</NuxtLink>
         </div>
@@ -165,7 +157,7 @@ async function reavaliar() {
                 <div class="tiny muted">{{ KIND_LABEL[paddock?.kind] }} · {{ paddock?.area_ha ? fmtNum(paddock.area_ha, 2) + ' ha' : 'área não definida' }}</div>
                 <h2>{{ paddock?.name }}</h2>
               </div>
-              <NuxtLink :to="`/piquete/${paddock?.id}`" class="btn sm">⚙️ Configurar</NuxtLink>
+              <NuxtLink :to="`/piquete/${paddock?.id}`" class="btn sm"><Icon name="settings" :size="15" /> Configurar</NuxtLink>
             </div>
             <GrassMeter :value="current.value" :min="target.min" :max="target.max"
               :grass-name="target.grass?.name" :entry-height="target.grass?.entry_height_cm" :exit-height="target.grass?.exit_height_cm" />
@@ -177,7 +169,7 @@ async function reavaliar() {
 
           <!-- mapa -->
           <div class="card">
-            <div class="row between mb"><h3>Mapa</h3><span class="tiny muted">☀ referência · cores = situação</span></div>
+            <div class="row between mb"><h3>Mapa</h3><span class="tiny muted row" style="gap:4px"><Icon name="sun" :size="13" /> referência · cores = situação</span></div>
             <ClientOnly>
               <MapView :key="paddock?.id" :boundary="paddock?.boundary || []" :sensors="mapSensors" :others="otherBoundaries" tall @select="toggle" />
             </ClientOnly>
@@ -202,7 +194,7 @@ async function reavaliar() {
             <div v-else class="muted small mt">Sem leitura válida ainda.</div>
             <hr>
             <div class="row between tiny">
-              <span>📶 <b :style="{ color: rssiLabel(s.last_rssi).color }">{{ rssiLabel(s.last_rssi).label }}</b> {{ s.last_rssi ?? '' }} dBm</span>
+              <span class="row" style="gap:4px"><Icon name="signal" :size="14" /><b :style="{ color: rssiLabel(s.last_rssi).color }">{{ rssiLabel(s.last_rssi).label }}</b> {{ s.last_rssi ?? '' }} dBm</span>
               <span class="muted">{{ fmtAgo(s.last_seen_at) }}</span>
             </div>
             <div v-if="lastAny(s.id) && lastAny(s.id).quality !== 'valida'" class="tiny mt" :style="{ color: QUALITY[lastAny(s.id).quality]?.color }">
@@ -226,7 +218,7 @@ async function reavaliar() {
             <div class="row between mb"><h3>Alertas</h3><NuxtLink to="/alertas" class="small">ver todos</NuxtLink></div>
             <div class="stack">
               <AlertItem v-for="a in paddockAlerts" :key="a.id" :alert="a" compact />
-              <div v-if="!paddockAlerts.length" class="muted small">Nenhum alerta aberto. Tudo tranquilo no pasto 🌤️</div>
+              <div v-if="!paddockAlerts.length" class="muted small">Nenhum alerta aberto. Tudo tranquilo no pasto.</div>
             </div>
           </div>
         </div>

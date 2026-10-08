@@ -18,7 +18,7 @@ async function addFarm() {
     await store.setFarm(f.id)
     Object.assign(nf, { name: '', city: '', state: '' })
     showFarmForm.value = false
-    ok('Fazenda criada 🏡')
+    ok('Fazenda criada')
   } catch (e) { err(e) } finally { saving.value = false }
 }
 
@@ -66,7 +66,7 @@ const editing = ref<string | null>(null)
   <div class="wrap">
     <div class="row between mb">
       <h1>Fazendas</h1>
-      <button class="btn primary" @click="showFarmForm = !showFarmForm">+ Nova fazenda</button>
+      <button class="btn primary" @click="showFarmForm = !showFarmForm"><Icon name="plus" :size="16" /> Nova fazenda</button>
     </div>
 
     <form v-if="showFarmForm" class="card mb" @submit.prevent="addFarm">
@@ -83,9 +83,8 @@ const editing = ref<string | null>(null)
     <div class="grid auto mb">
       <div v-for="f in farms" :key="f.id" class="card farm" :class="{ on: f.id === farmId }" @click="f.id !== farmId && store.setFarm(f.id)">
         <div class="row between">
-          <div class="emoji">🏡</div>
-          <span v-if="f.is_demo" class="pill" style="background:#fdf0c8;color:#7a5600">demo</span>
-          <span v-else-if="f.id === farmId" class="pill" style="background:var(--leaf-soft);color:var(--leaf-dark)">ativa</span>
+          <div class="emoji"><Icon name="farm" :size="22" /></div>
+          <span v-if="f.id === farmId" class="pill" style="background:var(--leaf-soft);color:var(--leaf-dark)">ativa</span>
         </div>
         <h3>{{ f.name }}</h3>
         <div class="small muted">{{ f.farmer_name || '—' }}<span v-if="f.city"> · {{ f.city }}/{{ f.state }}</span></div>
@@ -96,7 +95,7 @@ const editing = ref<string | null>(null)
       <div class="card mb">
         <div class="row between">
           <h2>Piquetes de {{ farms.find(f => f.id === farmId)?.name }}</h2>
-          <button class="btn sm ghost" @click="editing = editing === farmId ? null : farmId">⚙️ Dados da fazenda</button>
+          <button class="btn sm ghost" @click="editing = editing === farmId ? null : farmId"><Icon name="settings" :size="15" /> Dados da fazenda</button>
         </div>
 
         <div v-if="editing === farmId" class="banner info mb" style="display:block">
@@ -131,8 +130,8 @@ const editing = ref<string | null>(null)
                 <td>{{ p.area_ha ? fmtNum(p.area_ha, 2) + ' ha' : '—' }}</td>
                 <td>{{ sensorCount(p.id) }}</td>
                 <td class="row" style="justify-content:flex-end">
-                  <NuxtLink :to="`/piquete/${p.id}`" class="btn sm">🗺️ Mapa e ajustes</NuxtLink>
-                  <button class="btn sm ghost danger" @click="removePaddock(p)">Excluir</button>
+                  <NuxtLink :to="`/piquete/${p.id}`" class="btn sm"><Icon name="map" :size="15" /> Mapa e ajustes</NuxtLink>
+                  <button class="btn sm ghost danger" title="Excluir" @click="removePaddock(p)"><Icon name="trash" :size="15" /></button>
                 </td>
               </tr>
               <tr v-if="!paddocks.length"><td colspan="6" class="muted">Nenhum piquete ainda.</td></tr>
@@ -152,7 +151,7 @@ const editing = ref<string | null>(null)
               <option v-for="g in grassTypes" :key="g.id" :value="g.id">{{ g.name }} ({{ CATEGORY_LABEL[g.category] }})</option>
             </select>
           </div>
-          <div class="field" style="align-self:end"><button class="btn primary" :disabled="saving">+ Criar e desenhar</button></div>
+          <div class="field" style="align-self:end"><button class="btn primary" :disabled="saving"><Icon name="plus" :size="16" /> Criar e desenhar</button></div>
         </form>
       </div>
     </template>
@@ -163,5 +162,5 @@ const editing = ref<string | null>(null)
 .farm { cursor: pointer; transition: .2s; }
 .farm:hover { transform: translateY(-2px); }
 .farm.on { border-color: var(--leaf-2); box-shadow: 0 0 0 3px var(--leaf-soft); }
-.emoji { font-size: 2rem; animation: float 4s ease-in-out infinite; }
+.emoji { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--leaf-soft); color: var(--leaf-dark); }
 </style>

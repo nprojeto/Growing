@@ -77,7 +77,7 @@ async function onMapClick(p: Pt) {
       place.deviceId = null; place.name = ''
     }
     await store.loadFarmData()
-    ok('Sensor posicionado 📍')
+    ok('Sensor posicionado')
   } catch (e) { err(e) }
 }
 
@@ -110,7 +110,7 @@ async function save() {
     if (error) throw error
     await store.loadFarmData()
     mode.value = 'view'
-    ok('Piquete salvo 🌿')
+    ok('Piquete salvo')
     store.evaluateAlerts().catch(() => {})
   } catch (e) { err(e) } finally { saving.value = false }
 }
@@ -126,10 +126,10 @@ async function save() {
     <template v-else>
       <div class="row between mb">
         <div>
-          <NuxtLink to="/painel" class="small">← Painel</NuxtLink>
+          <NuxtLink to="/painel" class="small row" style="gap:4px;text-decoration:none"><Icon name="back" :size="14" /> Painel</NuxtLink>
           <h1>{{ form.name || 'Piquete' }}</h1>
         </div>
-        <button class="btn primary" :disabled="saving" @click="save">{{ saving ? 'Salvando…' : '💾 Salvar' }}</button>
+        <button class="btn primary" :disabled="saving" @click="save"><Icon name="save" :size="16" /> {{ saving ? 'Salvando…' : 'Salvar' }}</button>
       </div>
 
       <div class="grid g2">
@@ -138,21 +138,21 @@ async function save() {
           <div class="row between mb">
             <h3>Mapa</h3>
             <div class="row">
-              <button class="chip" :class="{ on: mode === 'view' }" @click="cancelDraw">👁️ Ver</button>
-              <button class="chip" :class="{ on: mode === 'draw' }" @click="startDraw">✏️ Desenhar contorno</button>
-              <button class="chip" :class="{ on: mode === 'sensors' }" @click="mode = 'sensors'; draft = null">📍 Sensores</button>
+              <button class="chip" :class="{ on: mode === 'view' }" @click="cancelDraw"><Icon name="eye" :size="15" /> Ver</button>
+              <button class="chip" :class="{ on: mode === 'draw' }" @click="startDraw"><Icon name="pencil" :size="15" /> Desenhar contorno</button>
+              <button class="chip" :class="{ on: mode === 'sensors' }" @click="mode = 'sensors'; draft = null"><Icon name="pin" :size="15" /> Sensores</button>
             </div>
           </div>
 
           <div v-if="mode === 'draw'" class="banner warn mb">
-            <div>✏️</div>
+            <Icon name="pencil" :size="20" />
             <div class="grow small">Toque no mapa nos cantos da área, em ordem. <b>{{ draft?.length || 0 }}</b> ponto(s).</div>
             <button class="btn sm" @click="undo">Desfazer</button>
             <button class="btn sm primary" @click="finishDraw">Concluir</button>
           </div>
 
           <div v-if="mode === 'sensors'" class="banner info mb" style="display:block">
-            <div class="small mb"><b>📍 Toque no mapa</b> para posicionar. Arraste os pinos para ajustar.</div>
+            <div class="small mb"><b>Toque no mapa</b> para posicionar. Arraste os pinos para ajustar.</div>
             <div class="grid g2">
               <div class="field">
                 <label>Sensor</label>
@@ -181,7 +181,7 @@ async function save() {
             <span>Área: <b>{{ area ? fmtNum(area, 2) + ' ha' : '—' }}</b></span>
             <span>{{ form.boundary.length }} vértices · {{ here.length }} sensores</span>
           </div>
-          <div v-if="outside.length" class="banner warn mt small"><div>⚠️</div><div>Fora do contorno: {{ outside.map(s => 'ID ' + s.device_id).join(', ') }}.</div></div>
+          <div v-if="outside.length" class="banner warn mt small"><Icon name="warning" :size="18" /><div>Fora do contorno: {{ outside.map(s => 'ID ' + s.device_id).join(', ') }}.</div></div>
         </div>
 
         <!-- DADOS + FAIXA -->
@@ -236,9 +236,9 @@ async function save() {
                 <td class="tiny">{{ s.lat != null ? `${s.lat.toFixed(6)}, ${s.lng.toFixed(6)}` : 'não posicionado' }}</td>
                 <td><span :style="{ color: rssiLabel(s.last_rssi).color }">{{ rssiLabel(s.last_rssi).label }}</span> <span class="tiny muted">{{ s.last_rssi }}</span></td>
                 <td class="tiny">{{ fmtDateTime(s.last_seen_at) }}</td>
-                <td><button class="btn sm ghost danger" @click="updateSensor(s, { paddock_id: null })">Remover</button></td>
+                <td><button class="btn sm ghost danger" title="Remover do piquete" @click="updateSensor(s, { paddock_id: null })"><Icon name="x" :size="15" /></button></td>
               </tr>
-              <tr v-if="!here.length"><td colspan="7" class="muted">Nenhum sensor. Use o modo 📍 Sensores no mapa.</td></tr>
+              <tr v-if="!here.length"><td colspan="7" class="muted">Nenhum sensor. Use o modo Sensores no mapa.</td></tr>
             </tbody>
           </table>
         </div>

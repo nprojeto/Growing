@@ -41,7 +41,7 @@ onMounted(() => {
 onBeforeUnmount(() => { map?.remove(); map = null })
 
 function pin(s: any) {
-  const label = s.role === 'reference' ? '☀' : String(s.device_id)
+  const label = s.role === 'reference' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></svg>' : String(s.device_id)
   return L.divIcon({
     className: '',
     html: `<div class="sensor-pin ${s.role === 'reference' ? 'ref' : ''} ${s.faded ? 'faded' : ''}" style="background:${s.color || '#2f7d32'}">${label}</div>`,
