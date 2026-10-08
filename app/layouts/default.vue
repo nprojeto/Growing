@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { session } = useSupa()
-const { farms, farmId, farm, alerts, loaded, busy, refresh, setFarm } = useStore()
+const { farms, farmId, alerts, profile, loaded, busy, refresh, setFarm } = useStore()
+const initials = computed(() => (profile.value?.full_name || '?').split(/\s+/).filter(Boolean).slice(0, 2).map((w: string) => w[0]!.toUpperCase()).join(''))
 const { toasts, err } = useToast()
 const route = useRoute()
 
@@ -45,7 +46,11 @@ async function logout() { await sb().auth.signOut() }
             <span v-if="n.to === '/alertas' && unread" class="badge">{{ unread }}</span>
           </NuxtLink>
         </nav>
-        <button class="btn ghost sm" title="Sair" @click="logout"><Icon name="logout" :size="16" /> Sair</button>
+        <NuxtLink to="/perfil" class="me" :class="{ on: route.path === '/perfil' }" title="Meu perfil">
+          <span class="av">{{ initials }}</span>
+          <span class="nm">{{ (profile?.full_name || 'Perfil').split(' ')[0] }}</span>
+        </NuxtLink>
+        <button class="btn ghost sm" title="Sair" @click="logout"><Icon name="logout" :size="16" /></button>
       </div>
       <div v-if="busy" class="loadbar" />
     </header>
@@ -74,7 +79,10 @@ async function logout() { await sb().auth.signOut() }
 
 .badge { background: var(--danger); color: #fff; border-radius: 999px; font-size: .7rem; padding: 1px 6px; }
 .loadbar { height: 3px; background: linear-gradient(90deg, var(--leaf-2), var(--sun), var(--leaf-2)); background-size: 200% 100%; animation: shimmer 1s linear infinite; }
-.demo-strip { background: var(--sun-soft); color: #6b4b00; text-align: center; font-weight: 700; font-size: .85rem; padding: 6px 12px; }
+.me { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink-2); font-weight: 700; padding: 4px 10px 4px 4px; border-radius: 999px; transition: .15s; }
+.me:hover, .me.on { background: var(--surface-2); }
+.av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-size: .78rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--leaf-2), var(--leaf-dark)); }
+@media (max-width: 700px) { .nm { display: none; } }
 @media (max-width: 700px) {
   .nav { order: 3; flex-basis: 100%; }
   .farm-sel { flex: 1; max-width: none; }
