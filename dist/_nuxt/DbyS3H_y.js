@@ -1,0 +1,1 @@
+import{C as e}from"./xvhh1E0s.js";function t(){let t=e(`toasts`,()=>[]);function n(e,n=`info`,r=3800){let i=Date.now()+Math.random();t.value.push({id:i,text:e,kind:n}),setTimeout(()=>{t.value=t.value.filter(e=>e.id!==i)},r)}return{toasts:t,ok:e=>n(e,`ok`),err:e=>n(e?.message||String(e),`err`,6e3),info:e=>n(e)}}export{t};
